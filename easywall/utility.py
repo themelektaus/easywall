@@ -3,12 +3,14 @@ from csv import reader
 from datetime import datetime
 from io import StringIO
 from math import floor
-from os import R_OK, access, chmod, makedirs, path, remove, rename
+from os import R_OK, access, chmod, makedirs, path, remove, rename, listdir
 from shutil import rmtree
-from subprocess import run
+from subprocess import run, check_output, STDOUT, CalledProcessError
 from traceback import TracebackException
 from typing import Any, List
 from urllib import parse
+
+import sys
 
 # -------------------------
 # File Operations
@@ -206,3 +208,47 @@ def execute_os_command(command: str) -> bool:
     if proc.returncode > 0:
         return False
     return True
+
+
+def execute_os_command2(command: str) -> (str, str):
+    """TODO: Doku."""
+    output = None
+    error = None
+    try:
+        output = check_output(command, shell=True, stderr=STDOUT)
+        output = output.decode(sys.stdout.encoding).strip()
+    except CalledProcessError as e:
+        error = f"command '{e.cmd}' return with error (code {e.returncode}): {e.output}"
+    return (output, error)
+
+
+def get_network_interfaces() -> list:
+    """TODO: Doku."""
+    result = []
+    ifnames = listdir('/sys/class/net/')
+    for ifname in ifnames:
+        ip = get_ip_address(ifname)
+        if ip:
+            result.append((ifname, ip))
+    return result
+
+
+def get_ip_address(ifname) -> str:
+    """TODO: Doku."""
+    output = execute_os_command2(f"ifconfig {ifname} | grep inet")[0]
+    if not output:
+        return None
+    output = output.split()
+    if len(output) < 2:
+        return None
+    return output[1]
+
+def compare_rules(a, b) -> bool:
+    """TODO: Doku."""
+    if (
+        a["port"] == b["port"] and
+        a["netinterface"] == b["netinterface"] and
+        a["allowedhost"] == b["allowedhost"]
+    ):
+        return True
+    return False

@@ -14,41 +14,13 @@
 
 ---
 
+## Orignal Heading
+
 **Firewalls** are becoming increasingly important in today's world. Hackers and automated scripts are constantly trying to **invade your system** and use it for Bitcoin mining, botnets or other things.
 
 To prevent these attacks, you can use a firewall on your system. **IPTables** is the strongest firewall in Linux because it can **filter packets in the kernel** before they reach the application. Using IPTables is **not very easy** for Linux beginners. We have created easywall - the simple **IPTables web interface**. The focus of the software is on easy installation and use.
 
 ![Home Screen](https://i.imgur.com/Tk1Mbvv.png)
-
----
-
-## Demo
-
-You can view an online version of the program as a demo under the following link:
-
-<https://dev01vt.wdkro.de:12227/> (Certificate is provided by Let's Encrypt)
-
-- **Username**: demo
-- **Password**: demo
-
-The online demo version is reset every 30 minutes and all data is deleted. The demo has only the frontend installed without the backend. Configuration changes are therefore not saved or applied.
-
----
-
-## Quick Start
-
-This guide refers to the easiest way to install using the APT Package Manager. For detailed installation instructions, please refer to the [documentation](https://github.com/jpylypiw/easywall/blob/master/docs/INSTALL.md).
-
-```sh
-apt update
-apt install -y apt-transport-https gnupg
-echo "deb https://apt.wdkro.de/ stable main" > /etc/apt/sources.list.d/easywall.list
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys D88D7689C1624EE3
-apt update
-apt install easywall
-```
-
-After installation, the web interface can be accessed in the browser at <https://hostname-or-ip-address:12227>.
 
 ---
 
@@ -63,7 +35,20 @@ After installation, the web interface can be accessed in the browser at <https:/
 - **TCP, UDP and Port Ranges** - Open them if you need them in the internet.
 - **Own IPTables rules** - Can be managed in the web interface.
 - **Install and Update** - The software can be installed and updated easily.
-- **Ansible role**- For advanced users and automation.
+- **Ansible role** - For advanced users and automation.
+
+---
+
+# Additional Features
+
+- **Network interfaces** - Assign network interfaces and include them in the rules.
+- **Strict Open Ports** - additionally limits an open port by a network interface and/or the source host/ip.
+- **IP Forwarding** - has the ability to set a destination host/ip.
+- **Dashboard** - is an possible overview of available services, apps and so on...
+- **Navigation** - Hide unused menu items.
+- **Docker Support**
+- **NGINX Reverse Manager Support**
+- **OpenVPN Support**
 
 ---
 

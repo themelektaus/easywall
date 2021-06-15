@@ -55,6 +55,9 @@ class Webutils(object):
         payload.commit_date = self.get_commit_date(str(self.cfg.get_value("VERSION", "date")))
         payload.config_mismatch = self.get_config_version_mismatch("core")
         payload.web_config_mismatch = self.get_config_version_mismatch("web")
+        payload.nav_blacklist = self.cfg.get_value("uwsgi", "nav_blacklist")
+        payload.nav_whitelist = self.cfg.get_value("uwsgi", "nav_whitelist")
+        payload.nav_custom = self.cfg.get_value("uwsgi", "nav_custom")
         return payload
 
     def get_machine_infos(self) -> dict:

@@ -153,3 +153,8 @@ easywall/web/static/js/*.min.js*
 .apply
 debian/.debhelper/
 debian/easywall/
+
+# Custom
+*.ovpn
+index.cuc.html
+!easywall/web/static/fonts/asap-*.ttf

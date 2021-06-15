@@ -73,3 +73,159 @@ body {
   background-color: #fff;
   border: 0.05rem solid #fff;
 }
+
+@font-face {
+	font-family: Asap;
+	src: url("../fonts/asap-regular.ttf");
+}
+
+@font-face {
+	font-family: Asap;
+	src: url("../fonts/asap-semibold.ttf");
+	font-weight: bold;
+}
+
+@font-face {
+	font-family: Asap;
+	src: url("../fonts/asap-italic.ttf");
+	font-style: italic;
+}
+
+@font-face {
+	font-family: Asap;
+	src: url("../fonts/asap-semibold-italic.ttf");
+	font-weight: bold;
+	font-style: italic;
+}
+
+body {
+  font-family: Asap;
+}
+
+.container {
+  padding-bottom: 1em;
+}
+
+.cover-container {
+  margin-top: 0;
+  position: relative;
+  min-height: calc(100vh - 58px);
+  background-color: #fff;
+  color: black;
+  text-shadow: none;
+  box-shadow: none;
+}
+
+.jumbotron {
+  padding-top: 3.5em;
+  padding-bottom: 2em;
+}
+
+.dashboard {
+  padding: 0 0 4em;
+  word-spacing: -1em;
+  margin-top: -2em;
+}
+
+.dashboard-item {
+  display: inline-block;
+  width: 100%;
+  max-width: 640px;
+  vertical-align: bottom;
+  margin: 0;
+  padding: 1em;
+  word-spacing: 0em;
+  font-size: .95em;
+  opacity: 0;
+  transform: translateY(150px);
+  transition: opacity 150ms, transform 150ms;
+}
+
+.dashboard-item.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (min-width: 1150px) { .dashboard-item { width: 49%; } }
+@media (min-width: 1770px) { .dashboard-item { width: 32%; } }
+@media (min-width: 2100px) { .dashboard-item { width: 29%; } }
+
+.dashboard-item-icon {
+  width: 200px;
+  height: 200px;
+  margin: 2.5em auto 1.5em;
+  padding: 15px;
+}
+
+.dashboard-item .dashboard-item-icon a img {
+  transition: transform 250ms;
+  transform: scale(1);
+}
+
+.dashboard-item:hover .dashboard-item-icon a img {
+  transform: scale(1.1);
+}
+
+.dashboard-item .dashboard-item-icon a:active img {
+  opacity: 0.7;
+}
+
+.dashboard-item-icon img {
+  width: 100%;
+}
+
+.dashboard-item h3 {
+  font-size: 1.6em;
+}
+
+.dashboard-item h4 {
+  font-size: 1.3em;
+}
+
+.dashboard-item .lead {
+  font-size: 1.1em;
+  color: #666
+}
+
+.navbar-nav > .nav-item.apply > .nav-link {
+  color: #6b6;
+}
+
+.navbar-nav > .nav-item.apply:hover > .nav-link {
+  color: #9c9;
+}
+
+.navbar-nav > .nav-item.apply.active > .nav-link {
+  color: #bfb;
+}
+
+b, strong {
+  font-weight: bold;
+}
+
+.dashboard-item b {
+  color: black;
+}
+
+.badge-protocol {
+  font-size: 12px;
+  vertical-align: 1px;
+  font-weight: normal;
+  background: #e9e9e9;
+  color: #777;
+}
+
+.font-size-15-normal,
+.font-size-15-normal-w-45,
+.font-size-15-normal-w-60 {
+  font-size: 15px;
+  font-weight: normal;
+}
+
+.font-size-15-normal-w-45 {
+  width: 45px;
+}
+
+.font-size-15-normal-w-60 {
+  width: 60px;
+}

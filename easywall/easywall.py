@@ -1,12 +1,13 @@
 """TODO: Doku."""
 from datetime import datetime
 from logging import debug, info
+from socket import gethostbyname
 
 from easywall.acceptance import Acceptance
 from easywall.config import Config
 from easywall.iptables_handler import Chain, Iptables, Target
 from easywall.rules_handler import RulesHandler
-from easywall.utility import file_exists, rename_file
+from easywall.utility import file_exists, rename_file, execute_os_command, get_ip_address
 
 
 class Easywall():
@@ -41,6 +42,8 @@ class Easywall():
             self.rules.rollback_from_backup()
             info("Configuration was not accepted, rollback applied")
         else:
+            self.restart_docker()
+            self.postprocess_iptables()
             info("New configuration was applied.")
 
     def apply_iptables(self) -> None:
@@ -50,7 +53,11 @@ class Easywall():
 
         # drop intbound traffic and allow outbound traffic
         self.iptables.add_policy(Chain.INPUT, Target.DROP)
+        self.iptables.add_policy(Chain.FORWARD, Target.DROP)
         self.iptables.add_policy(Chain.OUTPUT, Target.ACCEPT)
+
+        self.iptables.add_chain("DOCKER-USER")
+        self.iptables.add_custom(f"-A FORWARD -j DOCKER-USER")
 
         # accept traffic from loopback interface (localhost)
         self.iptables.add_append(Chain.INPUT, "-i lo -j ACCEPT")
@@ -63,12 +70,22 @@ class Easywall():
         self.iptables.add_append(Chain.INPUT, "-s 127.0.0.0/8 ! -i lo -j DROP", False, True)
         self.iptables.add_append(Chain.INPUT, "-s ::1/128 ! -i lo -j DROP", True)
 
+        lan = self.cfg.get_value("NETINTERFACES", "lan")
+        wan = self.cfg.get_value("NETINTERFACES", "wan")
+        vpn = self.cfg.get_value("NETINTERFACES", "vpn")
+        docker1 = self.cfg.get_value("NETINTERFACES", "docker1")
+        docker2 = self.cfg.get_value("NETINTERFACES", "docker2")
+
         # Apply ICMP Rules
         self.apply_icmp()
 
         # forewarded ports
         self.apply_forwarding()
-
+        
+        # masquerade LAN and WAN
+        self.apply_masquerade(lan)
+        self.apply_masquerade(wan)
+        
         # SSH Brute Force Prevention
         self.apply_ssh_brute()
 
@@ -91,10 +108,10 @@ class Easywall():
         self.apply_whitelist()
 
         # accept TCP Ports
-        self.apply_rules("tcp")
+        self.apply_rules("tcp", docker1, docker2)
 
         # accept UDP Ports
-        self.apply_rules("udp")
+        self.apply_rules("udp", docker1, docker2)
 
         # Apply Custom Rules
         self.apply_custom_rules()
@@ -106,32 +123,30 @@ class Easywall():
                 "-m limit --limit {}/minute -j LOG --log-prefix \"easywall blocked: \"".
                 format(self.cfg.get_value("IPTABLES", "log_blocked_connections_log_limit")))
 
+        # accept lan, vpn and reverse proxy (docker2)
+        self.iptables.add_custom(f"-A DOCKER-USER -i {lan} -j ACCEPT")
+        self.iptables.add_custom(f"-A DOCKER-USER -o {lan} -j ACCEPT")
+        self.iptables.add_custom(f"-A DOCKER-USER -i {vpn} -j ACCEPT")
+        self.iptables.add_custom(f"-A DOCKER-USER -o {vpn} -j ACCEPT")
+        self.iptables.add_custom(f"-A DOCKER-USER -o {wan} -j ACCEPT")
+        self.iptables.add_custom(f"-A DOCKER-USER -i {wan} -o {docker2} -j ACCEPT")
+        self.iptables.add_custom(f"-A DOCKER-USER -i {wan} -j DROP")
+
         # reject all packages which not match the rules
         self.iptables.add_append(Chain.INPUT, "-j DROP")
 
     def apply_forwarding(self) -> None:
         """TODO: Doku."""
-        for ipaddr in self.rules.get_current_rules("forwarding"):
-            proto = ipaddr.split(":")[0]
-            source = ipaddr.split(":")[1]
-            dest = ipaddr.split(":")[2]
-
+        for r in self.get_forward_rules():
+            netinterface = r[0] if f"-i {r[0]}" else ""
             self.iptables.insert(
                 table="nat",
                 chain=Chain.PREROUTING,
-                rule="-p {} --dport {} -j REDIRECT --to-port {}".format(proto, dest, source))
-            self.iptables.insert(
-                table="nat",
-                chain=Chain.OUTPUT,
-                rule="-p {} -o lo --dport {} -j REDIRECT --to-port {}".format(proto, dest, source))
-            self.iptables.add_append(
-                chain=Chain.INPUT,
-                rule="-p {} --dport {} -m conntrack --ctstate NEW -j ACCEPT".format(proto, source)
+                rule=f"{netinterface} -p {r[1]} --dport {r[2]} -j DNAT --to-destination {r[3]}:{r[4]}"
             )
-            self.iptables.add_append(
-                chain=Chain.INPUT,
-                rule="-p {} --dport {} -m conntrack --ctstate NEW -j ACCEPT".format(proto, dest)
-            )
+
+    def apply_masquerade(self, netinterface: str) -> None:
+        self.iptables.insert(table="nat", chain=Chain.POSTROUTING, rule=f"-o {netinterface} -j MASQUERADE")
 
     def apply_ssh_brute(self) -> None:
         """TODO: Doku."""
@@ -378,7 +393,7 @@ class Easywall():
             else:
                 self.iptables.add_append(Chain.INPUT, "-s {} -j ACCEPT".format(ipaddr), onlyv4=True)
 
-    def apply_rules(self, ruletype: str) -> None:
+    def apply_rules(self, ruletype: str, docker1: str, docker2: str) -> None:
         """
         this function adds rules for incoming tcp and udp connections to iptables
         which accept a connection to this list of ports
@@ -389,17 +404,35 @@ class Easywall():
             jail = "ACCEPT"
             if port["ssh"]:
                 jail = "SSHBRUTE"
-
+            
             if ":" in port["port"]:
-                rule = "-p {} --match multiport --dports {}".format(
-                    ruletype, port["port"])
+                rule = f"-p {ruletype} --match multiport --dports {port['port']}"
             else:
-                rule = "-p {} --dport {}".format(ruletype, port["port"])
+                rule = f"-p {ruletype} --dport {port['port']}"
 
-            self.iptables.add_append(
-                chain=Chain.INPUT,
-                rule="{} -m conntrack --ctstate NEW -j {}".format(rule, jail)
-            )
+            if port["allowedhost"]:
+                host = gethostbyname(port["allowedhost"])
+                rule = f"-s {host} {rule}"
+            
+            if port["netinterface"]:
+                netinterface = self.cfg.get_value("NETINTERFACES", port["netinterface"]);
+                self.apply_rules_add(netinterface, rule, jail)
+                self.apply_rules_add(docker1, rule, jail)
+                self.apply_rules_add(docker2, rule, jail)
+                self.iptables.add_custom(f"-A DOCKER-USER -i {netinterface} {rule} -j {jail}")
+                self.iptables.add_custom(f"-A DOCKER-USER -i {docker1} {rule} -j {jail}")
+                self.iptables.add_custom(f"-A DOCKER-USER -i {docker2} {rule} -j {jail}")
+            else:
+                self.apply_rules_add(None, rule, jail)
+                self.iptables.add_custom(f"-A DOCKER-USER {rule} -j {jail}")
+
+    def apply_rules_add(self, interface: str, rule: str, jail: str) -> None:
+        if interface:
+            rule = f"-i {interface} {rule}"
+        self.iptables.add_append(
+            chain=Chain.INPUT,
+            rule=f"{rule} -m conntrack --ctstate NEW -j {jail}"
+        )
 
     def apply_custom_rules(self) -> None:
         """TODO: Doku."""
@@ -407,6 +440,39 @@ class Easywall():
             if rule != "":
                 if not rule.startswith("#"):
                     self.iptables.add_custom(rule=rule)
+
+    def restart_docker(self) -> None:
+        execute_os_command("service docker restart")
+
+    def postprocess_iptables(self) -> None:
+        lan = self.cfg.get_value("NETINTERFACES", "lan")
+        wan = self.cfg.get_value("NETINTERFACES", "wan")
+        lan_ip = get_ip_address(lan)
+        wan_ip = get_ip_address(wan)
+        self.iptables.add_custom("-I DOCKER-USER -s 10.0.0.0/24 -j ACCEPT")
+        self.iptables.add_custom("-I DOCKER-USER -s 10.8.0.0/24 -j ACCEPT")
+        
+        for r in self.get_forward_rules():
+            netinterface = r[0] if f"-i {r[0]}" else ""
+            self.iptables.add_custom(f"-I DOCKER-USER {netinterface} -p {r[1]} -d {r[3]} --dport {r[4]} -j DROP")
+            for port in self.rules.get_current_rules(r[1]):
+                if port["port"] == r[2]:
+                    netinterface = "-i {}".format(self.cfg.get_value("NETINTERFACES", port["netinterface"])) if port["netinterface"] else ""
+                    allowedhost = host = "-s {}".format(gethostbyname(port["allowedhost"])) if port["allowedhost"] else ""
+                    self.iptables.add_custom(f"-I DOCKER-USER {netinterface} -p {r[1]} -d {r[3]} --dport {r[4]} {allowedhost} -j ACCEPT")
+        
+        self.iptables.add_custom("-I FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT")
+        self.iptables.add_custom(f"-t nat -A POSTROUTING -s 10.0.0.0/24 ! -d 10.0.0.0/24 -j SNAT --to-source {lan_ip}")
+        self.iptables.add_custom(f"-t nat -A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to-source {wan_ip}")
+
+    def get_forward_rules(self):
+        for ipaddr in self.rules.get_current_rules("forwarding"):
+            netinterface = self.cfg.get_value("NETINTERFACES", ipaddr.split(":")[0])
+            proto = ipaddr.split(":")[1]
+            source = ipaddr.split(":")[2]
+            dest_ip = gethostbyname(ipaddr.split(":")[3])
+            dest = ipaddr.split(":")[4]
+            yield (netinterface, proto, source, dest_ip, dest)
 
     def rotate_backup(self) -> None:
         """TODO: Doku."""

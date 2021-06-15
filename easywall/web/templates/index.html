@@ -1,26 +1,131 @@
 {% include 'head.html' %} {% include 'nav.html' %}
 
-<div class="cover-container">
-    <div class="inner cover">
-        <h1 class="cover-heading">easywall for iptables</h1>
+<div class="jumbotron text-center">
+    <div class="container">
+        <h1>
+            <span style="font-weight: normal; color: #aaa; ">Cloud by</span>
+            Example Networking Company
+        </h3>
         <p class="lead">
-            easywall is a software for easy operation of
-            <span class="badge badge-secondary" style="text-shadow: none;">firewalls</span>.<br />
-            The software was developed in the modern programming language
-            <span class="badge badge-secondary" style="text-shadow: none;">python3</span>.<br />
-            We are constantly working on
-            <span class="badge badge-secondary" style="text-shadow: none;">improving</span> the software.<br />
-            Currently easywall is still in the
-            <span class="badge badge-warning" style="text-shadow: none;">beta</span> version.<br />
-            If you like the software, we would be glad about
-            <a href="https://github.com/sponsors/jpylypiw" target="_blank" class="badge badge-secondary"
-                style="text-shadow: none;">financial support</a></span>.<br />
-            If you have found a bug, you can report it to us in a
-            <a href="https://github.com/jpylypiw/easywall/issues" target="_blank" class="badge badge-secondary"
-                style="text-shadow: none;">GitHub issue</a> or in
-            <a href="https://discord.gg/CUj2sFb" target="_blank" class="badge badge-secondary"
-                style="text-shadow: none;">Discord</a>.
+            This is a possible setup for hosting the new Cloud Network of ENC.<br>
+            Some services are there for basic routings and classifications.<br>
+            This host also provides other core functionalities.<br>
         </p>
+    </div>
+</div>
+
+<div class="cover-container">
+    <div class="not-inner cover">
+        <div class="dashboard">
+            
+            <div class="dashboard-item">
+                <div class="dashboard-item-icon">
+                    <a href="#">
+                        <img src="/static/img/firewall.png">
+                    </a>
+                </div>
+                <h3>Firewall</h3>
+                <h4><a href="#" class="badge badge-success">firewall.example.com</a></h4>
+                <p class="lead">
+                    The complete traffic should lead to this machine.<br>
+                    It is based on <b>iptables</b> which has two chains. In this case: <b>filter</b> and <b>nat</b>.<br>
+                    Also, there are some security features supported and activated.<br>
+                        <span class="badge badge-secondary">SSH brute force Prevention</span>
+                        <span class="badge badge-secondary">ICMP flood Prevention</span>
+                        <span class="badge badge-secondary">port scan Prevention</span>
+                </p>
+            </div>
+        
+            <div class="dashboard-item">
+                <div class="dashboard-item-icon">
+                    <a href="#">
+                        <img src="/static/img/ngnix-proxy-manager.png">
+                    </a>
+                </div>
+                <h3>Reverse Proxy</h3>
+                <h4><a href="#" class="badge badge-success">proxy.example.com</a></h4>
+                <p class="lead">
+                    This reverse proxy is an instance of
+                    <span class="badge badge-secondary">Nginx Proxy Manager</span><br>
+                    Every web traffic should point to this service.<br>
+                    Furthermore, it is managing SSL certificates for any domain.
+                </p>
+            </div>
+        
+            <div class="dashboard-item">
+                <div class="dashboard-item-icon">
+                    <a href="#">
+                        <img src="/static/img/adguard.svg">
+                    </a>
+                </div>
+                <h3>DNS</h3>
+                <h4><a href="#" class="badge badge-success">dns.example.com</a></h4>
+                <p class="lead">
+                    The DNS server is an instance of
+                    <span class="badge badge-secondary">AdGuard Home</span><br>
+                    The main tasks of AdGuard are blocking annoying domains and<br>
+                    resolving the name of the requesters by their ip address.
+                </p>
+            </div>
+            
+            <div class="dashboard-item">
+                <div class="dashboard-item-icon">
+                    <a href="/download/client.example.vpn.ovpn">
+                        <img src="/static/img/openvpn.svg">
+                    </a>
+                </div>
+                <h3>OpenVPN</h3>
+                <p class="lead">
+                    The OpenVPN servers's IP address is
+                    <span class="badge badge-dark">1.2.3.4</span>
+                    alias
+                    <span class="badge badge-dark">cloud.example.vpn</span><br>
+                    To connect to the VPN just get the OpenVPN Client and<br>
+                    download the following profile: <a href="/download/client.example.vpn.ovpn" class="badge badge-info">client.example.vpn.ovpn</a><br>
+                </p>
+            </div>
+            
+            <div class="dashboard-item">
+                <div class="dashboard-item-icon">
+                    <a href="http://cloud.example.vpn:9000/#!/auth" target="_blank">
+                        <img src="/static/img/docker.png" style="padding-top: 2em; ">
+                    </a>
+                </div>
+                <h3>Docker</h3>
+                <h4><a href="http://cloud.example.vpn:9000/#!/auth" target="_blank" class="badge badge-info">cloud.example.vpn:9000</a></h4>
+                <p class="lead">
+                    This server makes use of Docker and<br>
+                    uses a suitable management interface called
+                    <span class="badge badge-secondary">Portainer</span><br>
+                    For example, the reverse proxy is running as a docker container.<br>
+                </p>
+            </div>
+            
+            <div class="dashboard-item">
+                <div class="dashboard-item-icon">
+                    <img src="/static/img/info.svg">
+                </div>
+                <h3>Facts</h3>
+                <p class="lead">
+                    This is a VM hosted by
+                    <span class="badge badge-secondary">Example Provider</span> which only needs<br>
+                    1 shared processor core, 1 GB of memory and 10 GB storage.<br>
+                    It costs about &euro; 120 per year.
+                </p>
+            </div>
+            
+            <div class="dashboard-item">
+                <div class="dashboard-item-icon">
+                    <img src="/static/img/cloud.svg">
+                </div>
+                <h3>Other Subdomains</h3>
+                <p class="lead">
+                    Request the public IP address of this server <a href="#" class="badge badge-primary">ip.example.com</a>
+                </p>
+            </div>
+            
+            <div style="clear: both; "></div>
+        </div>
     </div>
 </div>
 

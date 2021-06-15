@@ -1,6 +1,7 @@
 """Contains functions for the ports route."""
 from operator import itemgetter
 
+from easywall.utility import compare_rules
 from easywall.rules_handler import RulesHandler
 from easywall.web.login import login
 from easywall.web.webutils import Webutils
@@ -15,14 +16,12 @@ def ports(saved: bool = False) -> str:
     if utils.check_login(request) is True:
         payload = utils.get_default_payload("Open Ports")
         payload.lead = """
-            On this page you can open ports for incoming connections.<br />
-            You can add tcp and udp ports.<br />
-            Please check whether the entries in the list are needed in the future and
-            remove old entries if they are no longer needed.<br />
-            To list all open ports under Linux use the command <code>netstat -ln</code>
+            On this page you can open ports for incoming connections.<br>
+            <br>
+            <br>
         """
-        payload.tcp = natsorted(rules.get_rules_for_web("tcp"), key=itemgetter(*['port']))
-        payload.udp = natsorted(rules.get_rules_for_web("udp"), key=itemgetter(*['port']))
+        payload.tcp = natsorted(rules.get_rules_for_web("tcp"), key=itemgetter(*['port', 'allowedhost', 'netinterface']))
+        payload.udp = natsorted(rules.get_rules_for_web("udp"), key=itemgetter(*['port', 'allowedhost', 'netinterface']))
         payload.custom = False
         if rules.diff_new_current("tcp") is True or rules.diff_new_current("udp") is True:
             payload.custom = True
@@ -42,6 +41,8 @@ def ports_save() -> str:
         entry["port"] = ""
         entry["description"] = ""
         entry["ssh"] = False
+        entry["netinterface"] = ""
+        entry["allowedhost"] = ""
 
         for key, value in request.form.items():
             if key == "remove":
@@ -56,6 +57,10 @@ def ports_save() -> str:
                 entry["description"] = value
             elif key == "ssh":
                 entry["ssh"] = True
+            elif key == "netinterface":
+                entry["netinterface"] = value
+            elif key == "allowedhost":
+                entry["allowedhost"] = value
             else:
                 entry["port"] = key
 
@@ -68,7 +73,6 @@ def ports_save() -> str:
         return ports(result)
     return login()
 
-
 def add_port(entry: dict) -> bool:
     """Add a port to the list of open ports."""
     rules = RulesHandler()
@@ -77,7 +81,7 @@ def add_port(entry: dict) -> bool:
     entry.pop("ruletype", None)  # we dont't want the ruletype to be saved
     duplicate = False
     for i in range(len(rulelist)):
-        if rulelist[i]['port'] == entry["port"]:
+        if compare_rules(rulelist[i], entry):
             duplicate = True
             break
     if duplicate is False:
@@ -92,7 +96,7 @@ def remove_port(entry: dict) -> bool:
     rules = RulesHandler()
     rulelist = rules.get_rules_for_web(entry["ruletype"])
     for i in range(len(rulelist)):
-        if rulelist[i]['port'] == entry["port"]:
+        if compare_rules(rulelist[i], entry):
             del rulelist[i]
             break
     rules.save_new_rules(entry["ruletype"], rulelist)

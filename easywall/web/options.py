@@ -4,9 +4,9 @@ from platform import node
 
 from flask import render_template, request
 
+from easywall.utility import get_network_interfaces, get_ip_address
 from easywall.web.login import login
 from easywall.web.webutils import Webutils
-
 
 def options(saved: bool = False, error: str = "", active_tab: str = "iptables") -> str:
     """Return the options page when the user is logged in."""
@@ -25,6 +25,8 @@ def options(saved: bool = False, error: str = "", active_tab: str = "iptables") 
         payload.saved = saved
         payload.error = error
         payload.active_tab = active_tab
+        payload.network_interfaces = get_network_interfaces()
+        
         return render_template('options.html', vars=payload)
     return login()
 
@@ -44,7 +46,7 @@ def options_save() -> str:
         password2 = ""
 
         for key, value in request.form.items():
-            if key != "section" and key != "cfgtype":
+            if key != "section" and key != "cfgtype" and key != 'active_tab':
                 if key.startswith("checkbox"):
                     key = key.replace("checkbox_", "")
                     value = correct_value_checkbox(key)

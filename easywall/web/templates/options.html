@@ -24,6 +24,10 @@
                                 data-toggle="tab" href="#iptables" role="tab">iptables</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {% if vars.active_tab == 'netinterfaces' %}active{% endif %}" data-toggle="tab"
+                                href="#netinterfaces" role="tab">Network Interfaces</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {% if vars.active_tab == 'ipv6' %}active{% endif %}" data-toggle="tab"
                                 href="#ipv6" role="tab">IPv6</a>
                         </li>
@@ -555,6 +559,65 @@
                             </form>
                         </div>
 
+                        <div class="tab-pane {% if vars.active_tab == 'netinterfaces' %}active{% endif %}" id="netinterfaces" role="tabpanel">
+                            
+                            {{ info }}
+                            
+                            <form action="/options-save" method="post">
+
+                                <input type="hidden" name="section" value="NETINTERFACES">
+                                <input type="hidden" name="cfgtype" value="easywall">
+                                <input type="hidden" name="active_tab" value="netinterfaces">
+
+                                <div class="form-group">
+                                    <label for="netinterface_lan">LAN</label>
+                                    <select class="custom-select" id="netinterface_lan" name="lan">
+                                        {% for x in vars.network_interfaces %}
+                                            <option {% if vars.config.get_value("NETINTERFACES", "lan") == x[0] %}selected{% endif %} value="{{ x[0] }}">{{ x[0] }} ({{ x[1] }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="netinterface_wan">WAN</label>
+                                    <select class="custom-select" id="netinterface_wan" name="wan">
+                                        {% for x in vars.network_interfaces %}
+                                            <option {% if vars.config.get_value("NETINTERFACES", "wan") == x[0] %}selected{% endif %} value="{{ x[0] }}">{{ x[0] }} ({{ x[1] }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="netinterface_vpn">VPN</label>
+                                    <select class="custom-select" id="netinterface_vpn" name="vpn">
+                                        {% for x in vars.network_interfaces %}
+                                            <option {% if vars.config.get_value("NETINTERFACES", "vpn") == x[0] %}selected{% endif %} value="{{ x[0] }}">{{ x[0] }} ({{ x[1] }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="netinterface_docker1">Docker (Default)</label>
+                                    <select class="custom-select" id="netinterface_docker1" name="docker1">
+                                        {% for x in vars.network_interfaces %}
+                                            <option {% if vars.config.get_value("NETINTERFACES", "docker1") == x[0] %}selected{% endif %} value="{{ x[0] }}">{{ x[0] }} ({{ x[1] }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="netinterface_vpn">Docker (Reverse Proxy)</label>
+                                    <select class="custom-select" id="netinterface_docker2" name="docker2">
+                                        {% for x in vars.network_interfaces %}
+                                            <option {% if vars.config.get_value("NETINTERFACES", "docker2") == x[0] %}selected{% endif %} value="{{ x[0] }}">{{ x[0] }} ({{ x[1] }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
+                        
                         <div class="tab-pane {% if vars.active_tab == 'ipv6' %}active{% endif %}" id="ipv6"
                             role="tabpanel">
                             <form action="/options-save" method="post">
@@ -848,6 +911,14 @@
                                 <input type="hidden" name="active_tab" value="webinterface">
 
                                 <div class="form-group">
+                                    <label for="index-page">Dashboard page</label>
+                                    <input type="text" class="form-control" id="index-page" name="index-page"
+                                        placeholder="index.html"
+                                        {% if vars.config_web.get_value("uwsgi", "index-page") != "" %}
+                                        value={{vars.config_web.get_value("uwsgi", "index-page")}} {% endif %}>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="https-socket">Options to start the web server</label>
                                     <input type="text" class="form-control" id="https-socket" name="https-socket"
                                         aria-describedby="https-socket_help"
@@ -884,6 +955,29 @@
                                     </small>
                                 </div>
 
+                                <b>Navigation</b><br>
+
+                                <div class="form-group m-1">
+                                    <input type="hidden" value="off" name="checkbox_nav_blacklist">
+                                    <input type="checkbox" id="nav_blacklist" name="nav_blacklist"
+                                        {% if vars.config_web.get_value("uwsgi", "nav_blacklist") == true %} checked {% endif %}>
+                                    <label class="form-check-label" for="nav_blacklist">Blacklist</label>
+                                </div>
+
+                                <div class="form-group m-1">
+                                    <input type="hidden" value="off" name="checkbox_nav_whitelist">
+                                    <input type="checkbox" id="nav_whitelist" name="nav_whitelist"
+                                        {% if vars.config_web.get_value("uwsgi", "nav_whitelist") == true %} checked {% endif %}>
+                                    <label class="form-check-label" for="nav_whitelist">Whitelist</label>
+                                </div>
+
+                                <div class="form-group m-1 mb-3">
+                                    <input type="hidden" value="off" name="checkbox_nav_custom">
+                                    <input type="checkbox" id="nav_custom" name="nav_custom"
+                                        {% if vars.config_web.get_value("uwsgi", "nav_custom") == true %} checked {% endif %}>
+                                    <label class="form-check-label" for="nav_custom">Custom</label>
+                                </div>
+                                
                                 <button type="submit" class="btn btn-primary">Submit</button>
                             </form>
                         </div>

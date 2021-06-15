@@ -2,7 +2,7 @@
 
 <div class="container pt-0 mb-3">
     <div class="row mb-3">
-        <div class="col">
+        <div class="col pb-3">
 
             {% if vars.custom %}
             <div class="alert alert-warning" role="alert">
@@ -24,162 +24,215 @@
             </div>
             {% endif %}
 
-            <div class="card w-100">
-                <div class="card-header">
-                    Open port in firewall for incoming connections
-                </div>
-                <div class="card-body">
-                    <form action="/ports-save" method="post">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <label for="port">Port number</label>
-                                    <input type="text" class="form-control" id="port" name="port"
-                                        aria-describedby="portHelp">
-                                    <small id="portHelp" class="form-text text-muted">
-                                        Please enter the numeric Port you want to open on this server.<br />
-                                        You can enter a single port or a port range.<br />
-                                        <strong>Example:</strong><br />
-                                        Single Port: <code>22</code><br />
-                                        Port Range: <code>25017:25020</code>.
-                                    </small>
-                                </div>
-                                <div class="form-group">
-                                    <label for="port">Port description (optional)</label>
-                                    <input type="text" class="form-control" id="description" name="description"
-                                        aria-describedby="descriptionHelp">
-                                    <small id="descriptionHelp" class="form-text text-muted">
-                                        You can set a description for the port.<br />
-                                        The description is only used for overview in the port list.
-                                    </small>
-                                </div>
-                            </div>
-                            <div class="col-6">
-                                <div class="form-group">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio"
-                                            name="tcpudp" id="tcpudp1" value="tcp" checked="checked">
-                                        <label class="form-check-label">TCP</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio"
-                                            name="tcpudp" id="tcpudp2" value="udp">
-                                        <label class="form-check-label">UDP</label>
-                                    </div>
-                                    <small id="tcpudpHelp" class="form-text text-muted">
-                                        Select whether the port to be opened is a TCP or UDP port.
-                                    </small>
-                                </div>
-                                <div class="form-group">
-                                    <div class="form-check-inline">
-                                        <input type="checkbox" id="ssh" name="ssh" aria-describedby="sshHelp"
-                                            class="form-check-input">
-                                        <label class="form-check-label">SSH</label>
-                                    </div>
-                                    <small id="sshHelp" class="form-text text-muted">
-                                        Check the checkbox if the port is the SSH port.<br />
-                                        If you have activated SSH Brute Force Prevention, this port is specially
-                                        monitored.
-                                    </small>
-                                </div>
-                                <button type="submit" class="btn btn-primary"
-                                    style="margin-left: 50%; transform: translateX(-50%)">Submit</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row pb-3">
-        <div class="col-md">
-
             {% if vars.tcp|length == 0 %}
             <ul class="list-group">
                 <li class="list-group-item justify-content-between">
                     No open TCP ports found.
                 </li>
             </ul>
-            {% endif %}
-
-            <form action="/ports-save" method="post">
-                <input type="hidden" name="remove" value="tcp">
-                <ul class="list-group">
-                    {% for port in vars.tcp %}
-                    <li class="list-group-item d-flex justify-content-between">
-                        <div class="float-left">
-                            <span class="badge badge-secondary badge-pill align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">tcp</span>
-                            {% if ':' in port.port %}
+            {% else %}
+            <ul class="list-group mb-4">
+                {% for port in vars.tcp %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <div class="float-left">
+                        <span class="badge badge-pill badge-protocol align-self-center mr-4">TCP</span>
+                        {% if port.netinterface %}
+                            <span class="badge badge-success font-size-15-normal-w-45 align-self-center mr-2 mt-1">{{ port.netinterface.upper() }}</span>
+                        {% else %}
+                            <span class="badge badge-warning font-size-15-normal-w-45 align-self-center mr-2 mt-1">ANY</span>
+                        {% endif %}
+                        {% if ':' in port.port %}
                             {% set templist = port.port.split(':') %}
-                            <span class="badge badge-light align-self-center"
-                                style="font-size: 15px; font-weight: normal;">{{ templist[0] }}</span> -
-                            <span class="badge badge-light align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">{{ templist[1] }}</span>
-                            {% else %}
-                            <span class="badge badge-light align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">{{ port.port }}</span>
-                            {% endif %}
-                            {% if port.description %}
-                            <span class="badge badge-dark align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">{{ port.description }}</span>
-                            {% endif %}
-                            {% if port.ssh %}
-                            <span class="badge badge-info align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">ssh</span>
-                            {% endif %}
-                        </div>
-                        <button type="submit" name="{{ port.port }}"
-                            class="btn btn-danger btn-sm float-right">Remove</button>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </form>
-        </div>
-        <div class="col-md">
-
+                            <span class="badge badge-light font-size-15-normal-w-45 align-self-center">
+                                {{ templist[0] }}
+                            </span>
+                            -
+                            <span class="badge badge-light font-size-15-normal-w-45 align-self-center mr-3">
+                                {{ templist[1] }}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-light font-size-15-normal-w-60 align-self-center mr-3">
+                                {{ port.port }}
+                            </span>
+                        {% endif %}
+                        {% if port.description %}
+                            <span class="font-size-15-normal align-self-center mr-3">
+                                {{ port.description }}
+                            </span>
+                        {% endif %}
+                        {% if port.ssh %}
+                            <span class="badge badge-info font-size-15-normal align-self-center mr-3">
+                                SSH brute force Prevention
+                            </span>
+                        {% endif %}
+                        {% if port.allowedhost %}
+                            <span class="badge badge-info font-size-15-normal align-self-center mr-3 mt-1">
+                                {{ port.allowedhost }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="float-right">
+                        <form action="/ports-save" method="post" class="float-right">
+                            <input type="hidden" name="remove" value="tcp">
+                            <input type="hidden" name="port" value="{{ port.port }}">
+                            <input type="hidden" name="netinterface" value="{{ port.netinterface }}">
+                            <input type="hidden" name="allowedhost" value="{{ port.allowedhost }}">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            
             {% if vars.udp|length == 0 %}
             <ul class="list-group">
                 <li class="list-group-item justify-content-between">
                     No open UDP ports found.
                 </li>
             </ul>
-            {% endif %}
-
-            <form action="/ports-save" method="post">
-                <input type="hidden" name="remove" value="udp">
-                <ul class="list-group">
-                    {% for port in vars.udp %}
-                    <li class="list-group-item d-flex justify-content-between">
-                        <div class="float-left">
-                            <span class="badge badge-secondary badge-pill align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">udp</span>
-                            {% if ':' in port.port %}
+            {% else %}
+            <ul class="list-group">
+                {% for port in vars.udp %}
+                <li class="list-group-item d-flex justify-content-between">
+                    <div class="float-left">
+                        <span class="badge badge-pill badge-protocol align-self-center mr-4">UDP</span>
+                        {% if port.netinterface %}
+                            <span class="badge badge-success font-size-15-normal-w-45 align-self-center mr-2 mt-1">{{ port.netinterface.upper() }}</span>
+                        {% else %}
+                            <span class="badge badge-warning font-size-15-normal-w-45 align-self-center mr-2 mt-1">ANY</span>
+                        {% endif %}
+                        {% if ':' in port.port %}
                             {% set templist = port.port.split(':') %}
-                            <span class="badge badge-light align-self-center"
-                                style="font-size: 15px; font-weight: normal;">{{ templist[0] }}</span> -
-                            <span class="badge badge-light align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">{{ templist[1] }}</span>
-                            {% else %}
-                            <span class="badge badge-light align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">{{ port.port }}</span>
-                            {% endif %}
-                            {% if port.description %}
-                            <span class="badge badge-dark align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">{{ port.description }}</span>
-                            {% endif %}
-                            {% if port.ssh %}
-                            <span class="badge badge-info align-self-center mr-3"
-                                style="font-size: 15px; font-weight: normal;">ssh</span>
-                            {% endif %}
-                        </div>
-                        <button type="submit" name="{{ port.port }}"
-                            class="btn btn-danger btn-sm float-right">Remove</button>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </form>
+                            <span class="badge badge-light font-size-15-normal-w-45 align-self-center">
+                                {{ templist[0] }}
+                            </span>
+                            -
+                            <span class="badge badge-light font-size-15-normal-w-45 align-self-center mr-3">
+                                {{ templist[1] }}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-light font-size-15-normal-w-60 align-self-center mr-3">
+                                {{ port.port }}
+                            </span>
+                        {% endif %}
+                        {% if port.description %}
+                            <span class="font-size-15-normal align-self-center mr-3">
+                                {{ port.description }}
+                            </span>
+                        {% endif %}
+                        {% if port.ssh %}
+                            <span class="badge badge-info font-size-15-normal align-self-center mr-3">
+                                SSH brute force Prevention
+                            </span>
+                        {% endif %}
+                        {% if port.allowedhost %}
+                            <span class="badge badge-info font-size-15-normal align-self-center mr-3 mt-1">
+                                {{ port.allowedhost }}
+                            </span>
+                        {% endif %}
+                    </div>
+                    <div class="float-right">
+                        <form action="/ports-save" method="post" class="float-right">
+                            <input type="hidden" name="remove" value="udp">
+                            <input type="hidden" name="port" value="{{ port.port }}">
+                            <input type="hidden" name="netinterface" value="{{ port.netinterface }}">
+                            <input type="hidden" name="allowedhost" value="{{ port.allowedhost }}">
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                <i class="fa fa-close"></i>
+                            </button>
+                        </form>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
         </div>
+        
+        <div class="col">
+            <div class="card w-100">
+                <div class="card-header">
+                    Open port in firewall for incoming connections
+                </div>
+                <div class="card-body">
+                    <form action="/ports-save" method="post">
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="netinterface" value="" checked="checked">
+                                <label class="form-check-label">Any</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="netinterface" value="lan">
+                                <label class="form-check-label">LAN</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="netinterface" value="wan">
+                                <label class="form-check-label">WAN</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="netinterface" value="vpn">
+                                <label class="form-check-label">VPN</label>
+                            </div>
+                            <small class="form-text text-muted">
+                                Select the network interface
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio"
+                                    name="tcpudp" id="tcpudp1" value="tcp" checked="checked">
+                                <label class="form-check-label">TCP</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio"
+                                    name="tcpudp" id="tcpudp2" value="udp">
+                                <label class="form-check-label">UDP</label>
+                            </div>
+                            <small id="tcpudpHelp" class="form-text text-muted">
+                                Select whether the port to be opened is a TCP or UDP port.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="port">Port number</label>
+                            <input type="text" class="form-control" id="port" name="port"
+                                aria-describedby="portHelp">
+                            <small id="portHelp" class="form-text text-muted">
+                                Please enter the numeric Port you want to open on this server.<br />
+                                You can enter a single port or a port range.<br />
+                                <strong>Example:</strong><br />
+                                Single Port: <code>22</code><br />
+                                Port Range: <code>25017:25020</code>.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="allowedhost">Allowed host (optional)</label>
+                            <input type="text" class="form-control" id="allowedhost" name="allowedhost">
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check-inline">
+                                <input type="checkbox" id="ssh" name="ssh" aria-describedby="sshHelp"
+                                    class="form-check-input">
+                                <label class="form-check-label">SSH brute force Prevention</label>
+                            </div>
+                            <small id="sshHelp" class="form-text text-muted">
+                                Check the checkbox if the port is the SSH port.<br />
+                                If you have activated SSH Brute Force Prevention, this port is specially
+                                monitored.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="port">Description</label>
+                            <input type="text" class="form-control" id="description" name="description">
+                        </div>
+                        <button type="submit" class="btn btn-primary"
+                            style="margin-left: 50%; transform: translateX(-50%)">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
     </div>
 </div>
 

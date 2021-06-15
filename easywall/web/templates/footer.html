@@ -137,6 +137,34 @@
     </div>
 </div>
 
+<!-- Flashes Modal -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="modal fade" id="flashesModal" tabindex="-1" role="dialog" aria-labelledby="flashesModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="flashesModallabel">Flushes</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="flashes">
+                {% for message in messages %}
+                    <pre>{{ message }}</pre><br>
+                {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endwith %}
+
 <!-- Host Modal -->
 <div class="modal fade" id="hostModal" tabindex="-1" role="dialog" aria-labelledby="hostModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -158,6 +186,11 @@
                 </ul>
             </div>
             <div class="modal-footer">
+                <div class="col text-left">
+                    <form action="/clean-up-and-restart-services">
+                        <button type="submit" class="btn btn-danger">Clean Up &amp; Restart Services </button>
+                    </form>
+                </div>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -174,7 +207,7 @@
     integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script>
 <script src="/static/js/easywall.js"
-    integrity="sha384-Z7sG9sJJNYTQ4WkmUVgxg6q45RxNszQnjg6AQPI3yF2MIMR3LGwfSYgwp5wdZX4A"
+    integrity="sha384-f/hoZ4EbA7BXbtLVPMP0buHNj8BmFO4Qe5zumZUOGarrUv/KQwV1LOcmf2Si3udd"
     crossorigin="anonymous"></script>
 </body>
 

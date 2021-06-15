@@ -31,3 +31,10 @@ if (countdown != null) {
     form.submit();
   }, accepttime * 1000);
 }
+
+$(document).ready(() => {
+  $('#flashesModal').modal('show');
+  $('.dashboard-item').each(function(i) {
+    setTimeout(() => $(this).addClass("visible"), 100 + i * 70);
+  });
+});

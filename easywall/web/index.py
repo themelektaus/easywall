@@ -8,5 +8,5 @@ def index() -> str:
     """Return the index page when the user is logged in."""
     utils = Webutils()
     if utils.check_login(request) is True:
-        return render_template('index.html', vars=utils.get_default_payload("Home"))
+        return render_template(utils.cfg.get_value("uwsgi", "index-page"), vars=utils.get_default_payload("Home"))
     return login()

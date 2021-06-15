@@ -122,3 +122,12 @@ class Config():
     def get_keys(self, section: str) -> AbstractSet[str]:
         """TODO: Doku."""
         return self.configlib[section].keys()
+
+    def set_default_value(self, section: str, key: str, value: str) -> None:
+        """TODO: Doku."""
+        if not self.configlib.has_section(section):
+            self.configlib.add_section(section)
+        if not self.configlib.has_option(section, key):
+            self.configlib.set(section, key, value)
+            with open(self.config_file_path, 'w') as configfile:
+                self.configlib.write(configfile)

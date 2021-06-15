@@ -3,6 +3,7 @@
 <div class="container pt-0 mb-3">
     <div class="row mb-3">
         <div class="col pb-3">
+            
             {% if vars.custom %}
             <div class="alert alert-warning" role="alert">
                 <strong>Unsaved!</strong> Differences between the current configuration and the active configuration
@@ -37,32 +38,70 @@
                     {% for forwarding in vars.forwardings %}
                     {% set templist = forwarding.split(':') %}
                     <li class="list-group-item d-flex justify-content-between">
-                        <span class="badge badge-secondary badge-pill align-self-center">
-                            {{ templist[0] }}
-                        </span>
-                        <span class="text-center">
-                            <span class="badge badge-info align-self-center text-center">
-                                {{ templist[1] }}
+                        <div class="float-left">
+                            <span class="badge badge-pill badge-protocol align-self-center mr-4">
+                                {% if templist[1] == "tcp" %} TCP {% else %} UDP {% endif %}
                             </span>
-                            to
-                            <span class="badge badge-info align-self-center text-center">
+                            {% if templist[0] %}
+                                <span class="badge badge-success font-size-15-normal-w-45 align-self-center mr-2 mt-1">
+                                    {{ templist[0].upper() }}
+                                </span>
+                            {% else %}
+                                <span class="badge badge-warning font-size-15-normal-w-45 align-self-center mr-2 mt-1">
+                                    ANY
+                                </span>
+                            {% endif %}
+                        </div>
+                        <span class="text-center mt-1">
+                            <span class="badge badge-light font-size-15-normal align-self-center text-center">
                                 {{ templist[2] }}
                             </span>
+                            <span style="font-size: .8em; color: #999; ">▶</span>
+                            <span class="badge badge-info font-size-15-normal align-self-center text-center">
+                                {{ templist[3] }}
+                            </span>
+                            <span class="badge badge-light font-size-15-normal align-self-center text-center">
+                                {{ templist[4] }}
+                            </span>
                         </span>
-                        <button type="submit" name="{{ forwarding }}"
-                            class="btn btn-danger btn-sm float-right">Remove</button>
+                        <div class="float-right">
+                            <button type="submit" name="{{ forwarding }}"
+                                class="btn btn-danger btn-sm float-right"><i class="fa fa-close"></i></button>
+                        </div>
                     </li>
                     {% endfor %}
                 </ul>
             </form>
         </div>
+        
         <div class="col">
             <div class="card w-100">
                 <div class="card-header">
-                    Select the ports to be forwarded from the local system to the Internet
+                    Select the ports to be forwarded
                 </div>
                 <div class="card-body">
                     <form action="/forwarding-save" method="post">
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="netinterface" value="" checked="checked">
+                                <label class="form-check-label">Any</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="netinterface" value="lan">
+                                <label class="form-check-label">LAN</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="netinterface" value="wan">
+                                <label class="form-check-label">WAN</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="netinterface" value="vpn">
+                                <label class="form-check-label">VPN</label>
+                            </div>
+                            <small class="form-text text-muted">
+                                Select the network interface.
+                            </small>
+                        </div>
                         <div class="form-group">
                             <div class="form-check form-check-inline">
                                 <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio" name="tcpudp"
@@ -85,6 +124,14 @@
                             <small id="source-port-help" class="form-text text-muted">
                                 Select the internal / source port number.<br />
                                 You can only select one port and not a range of ports.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <label for="destination-ip">Remote Host / IP</label>
+                            <input type="text" class="form-control" id="destination-ip" name="destination-ip"
+                                aria-describedby="destination-ip-help">
+                            <small id="destination-ip-help" class="form-text text-muted">
+                                Select the destination host / ip address.
                             </small>
                         </div>
                         <div class="form-group">

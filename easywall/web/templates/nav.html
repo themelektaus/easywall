@@ -11,27 +11,33 @@
     <div class="collapse navbar-collapse" id="topNavBar">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item {% if vars.title == 'Home' %} active {% endif %}">
-                <a class="nav-link btn" href="/">Home</a>
-            </li>
-            <li class="nav-item {% if vars.title == 'Options' %} active {% endif %}">
-                <a class="nav-link btn" href="/options">Options</a>
-            </li>
-            <li class="nav-item {% if vars.title == 'Blacklist' %} active {% endif %}">
-                <a class="nav-link btn" href="/blacklist">Blacklist</a>
-            </li>
-            <li class="nav-item {% if vars.title == 'Whitelist' %} active {% endif %}">
-                <a class="nav-link btn" href="/whitelist">Whitelist</a>
-            </li>
-            <li class="nav-item {% if vars.title == 'Port Forwarding' %} active {% endif %}">
-                <a class="nav-link btn" href="/forwarding">Forwarding</a>
+                <a class="nav-link btn" href="/">Dashboard</a>
             </li>
             <li class="nav-item {% if vars.title == 'Open Ports' %} active {% endif %}">
                 <a class="nav-link btn" href="/ports">Ports</a>
             </li>
-            <li class="nav-item {% if vars.title == 'Custom' %} active {% endif %}">
-                <a class="nav-link btn" href="/custom">Custom</a>
+            <li class="nav-item {% if vars.title == 'Port Forwarding' %} active {% endif %}">
+                <a class="nav-link btn" href="/forwarding">Forwarding</a>
             </li>
-            <li class="nav-item {% if vars.title == 'Apply' %} active {% endif %}">
+            {% if vars.nav_blacklist %}
+                <li class="nav-item {% if vars.title == 'Blacklist' %} active {% endif %}">
+                    <a class="nav-link btn" href="/blacklist">Blacklist</a>
+                </li>
+            {% endif %}
+            {% if vars.nav_whitelist %}
+                <li class="nav-item {% if vars.title == 'Whitelist' %} active {% endif %}">
+                    <a class="nav-link btn" href="/whitelist">Whitelist</a>
+                </li>
+            {% endif %}
+            {% if vars.nav_custom %}
+                <li class="nav-item {% if vars.title == 'Custom' %} active {% endif %}">
+                    <a class="nav-link btn" href="/custom">Custom</a>
+                </li>
+            {% endif %}
+            <li class="nav-item {% if vars.title == 'Options' %} active {% endif %}">
+                <a class="nav-link btn" href="/options">Options</a>
+            </li>
+            <li class="nav-item apply {% if vars.title == 'Apply' %} active {% endif %}">
                 <a class="nav-link btn" href="/apply">Apply</a>
             </li>
         </ul>
@@ -53,6 +59,7 @@
                     {% endif %}
                 </a>
             </li>
+            <!--
             <li class="nav-item">
                 <a class="nav-link btn" title="Need help?" href="#" data-toggle="modal" data-target="#helpModal">
                     <i class="fa fa-support" aria-hidden="true"></i>&nbsp;
@@ -60,6 +67,8 @@
                     <span class="d-lg-none">Need help?</span>
                 </a>
             </li>
+            -->
+            <!--
             <li class="nav-item">
                 <a class="nav-link btn" title="Version and Update" href="#" data-toggle="modal"
                     data-target="#versionModal">
@@ -71,6 +80,7 @@
                     {% endif %}
                 </a>
             </li>
+            -->
             <li class="nav-item">
                 <a class="nav-link btn" title="Host Information" href="#" data-toggle="modal" data-target="#hostModal">
                     <i class="fa fa-server" aria-hidden="true"></i>&nbsp;
@@ -79,7 +89,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link btn" title="easywall on GitHub" href="https://jpylypiw.github.io/easywall/"
+                <a class="nav-link btn" title="easywall on GitHub" href="https://github.com/themelektaus/easywall/"
                     target="_blank">
                     <i class="fa fa-github" aria-hidden="true"></i>&nbsp;
                     <span class="d-none d-sm-inline"></span>

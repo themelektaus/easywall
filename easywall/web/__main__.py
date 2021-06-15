@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from logging import info
 from typing import Tuple, Union
 
-from flask import Flask, wrappers
+from flask import Flask, wrappers, redirect, request, send_from_directory
 from flask_ipban import IpBan
 from werkzeug.wrappers import Response
 
@@ -23,6 +23,8 @@ from easywall.web.options import options, options_save
 from easywall.web.ports import ports, ports_save
 from easywall.web.webutils import Webutils
 from easywall.web.whitelist import whitelist, whitelist_save
+
+from easywall.utility import create_file_if_not_exists
 
 APP = Flask(__name__)
 CONFIG_PATH = "config/web.ini"
@@ -151,6 +153,12 @@ def apply_save_route() -> str:
     return apply_save()
 
 
+@APP.route('/clean-up-and-restart-services')
+def clean_up_and_restart_services():
+    create_file_if_not_exists(".clean_up_and_stop")
+    return redirect("/logout", code=302)
+
+
 @APP.route('/login', methods=['POST'])
 def login_post_route() -> Union[Response, str]:
     """Call the corresponding function from the appropriate module."""
@@ -174,6 +182,13 @@ def firstrun_save_route() -> Union[Response, str]:
     """Call the corresponding function from the appropriate module."""
     return firstrun_save()
 
+
+@APP.route('/download/<filename>')
+def download(filename):
+    utils = Webutils()
+    if utils.check_login(request) is True:
+        return send_from_directory("download", filename, as_attachment=True)
+    return redirect("/", code=302)
 
 @APP.errorhandler(404)
 def page_not_found_route(error: str) -> Union[str, Tuple[str, int]]:
@@ -240,6 +255,7 @@ class Main(object):
         info("starting easywall-web")
 
         self.cfg = Config(CONFIG_PATH)
+        self.cfg.set_default_value("uwsgi", "index-page", "index.html")
 
         if debug is True:
             info("loading Flask debug configuration")
