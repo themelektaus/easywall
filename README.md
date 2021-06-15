@@ -11,10 +11,6 @@
 
 ---
 
-[![Original Release](https://img.shields.io/github/v/release/jpylypiw/easywall)](https://github.com/jpylypiw/easywall)
-
----
-
 ## Orignal Heading
 
 **Firewalls** are becoming increasingly important in today's world. Hackers and automated scripts are constantly trying to **invade your system** and use it for Bitcoin mining, botnets or other things.
