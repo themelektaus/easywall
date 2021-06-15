@@ -1,6 +1,6 @@
 # New Connections
 - **Docker Support**
-- **NGINX Reverse Manager Support**
+- **NGINX Proxy Manager Support**
 - **OpenVPN Support**
 
 # New Features
