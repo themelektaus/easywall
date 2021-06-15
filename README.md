@@ -1,16 +1,17 @@
-# easywall [![GitHub Actions Build](https://img.shields.io/github/workflow/status/jpylypiw/easywall/pytest)](https://github.com/jpylypiw/easywall/actions) [![Coveralls github](https://img.shields.io/coveralls/github/jpylypiw/easywall)](https://coveralls.io/github/jpylypiw/easywall) [![GitHub license](https://img.shields.io/github/license/jpylypiw/easywall)](https://github.com/jpylypiw/easywall/blob/master/LICENSE)
+# New Features
 
-[![Release Version](https://img.shields.io/github/v/release/jpylypiw/easywall)](https://github.com/jpylypiw/easywall)
-[![Python Version](https://img.shields.io/pypi/pyversions/easywall)](https://github.com/jpylypiw/easywall)
-[![Repo Size](https://img.shields.io/github/repo-size/jpylypiw/easywall.svg)](https://github.com/jpylypiw/easywall)
-[![Release Status](https://img.shields.io/pypi/status/easywall)](https://github.com/jpylypiw/easywall)
-[![Security Headers](https://img.shields.io/security-headers?url=https%3A%2F%2Fdev01vt.wdkro.de%3A12227)](https://github.com/jpylypiw/easywall)
-[![Discord Support](https://img.shields.io/discord/819293895045283930)](https://discord.gg/3zJMvChvUA)
-[![Beerpay](https://img.shields.io/beerpay/jpylypiw/easywall)](https://beerpay.io/jpylypiw/easywall)
+- **Network interfaces** - Assign network interfaces and include them in the rules.
+- **Strict Open Ports** - additionally limits an open port by a network interface and/or the source host/ip.
+- **IP Forwarding** - has the ability to set a destination host/ip.
+- **Dashboard** - is an possible overview of available services, apps and so on...
+- **Navigation** - Hide unused menu items.
+- **Docker Support**
+- **NGINX Reverse Manager Support**
+- **OpenVPN Support**
 
-[![Pypi Download](https://img.shields.io/badge/download-pypi-yellowgreen)](https://pypi.org/project/easywall/)
-[![APT Download](https://img.shields.io/badge/download-apt-yellowgreen)](https://apt.wdkro.de/)
-[![GitHub Download](https://img.shields.io/badge/download-github-yellowgreen)](https://github.com/jpylypiw/easywall/releases/latest)
+---
+
+[![Original Release](https://img.shields.io/github/v/release/jpylypiw/easywall)](https://github.com/jpylypiw/easywall)
 
 ---
 
@@ -36,19 +37,6 @@ To prevent these attacks, you can use a firewall on your system. **IPTables** is
 - **Own IPTables rules** - Can be managed in the web interface.
 - **Install and Update** - The software can be installed and updated easily.
 - **Ansible role** - For advanced users and automation.
-
----
-
-# Additional Features
-
-- **Network interfaces** - Assign network interfaces and include them in the rules.
-- **Strict Open Ports** - additionally limits an open port by a network interface and/or the source host/ip.
-- **IP Forwarding** - has the ability to set a destination host/ip.
-- **Dashboard** - is an possible overview of available services, apps and so on...
-- **Navigation** - Hide unused menu items.
-- **Docker Support**
-- **NGINX Reverse Manager Support**
-- **OpenVPN Support**
 
 ---
 
