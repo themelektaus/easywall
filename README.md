@@ -1,13 +1,14 @@
-# New Features
-
-- **Network interfaces** - Assign network interfaces and include them in the rules.
-- **Strict Open Ports** - additionally limits an open port by a network interface and/or the source host/ip.
-- **IP Forwarding** - has the ability to set a destination host/ip.
-- **Dashboard** - is an possible overview of available services, apps and so on...
-- **Navigation** - Hide unused menu items.
+# New Connections
 - **Docker Support**
 - **NGINX Reverse Manager Support**
 - **OpenVPN Support**
+
+# New Features
+- **Network interfaces** - Assign network interfaces and include them in the rules.
+- **Strict Open Ports** - additionally limits an open port by a network interface and/or a source host/ip.
+- **IP Forwarding** - has the ability to set a destination host/ip.
+- **Dashboard** - is an possible overview of available services, apps and so on...
+- **Navigation** - Hide unused menu items.
 
 ---
 
