@@ -138,7 +138,7 @@ class Easywall():
     def apply_forwarding(self) -> None:
         """TODO: Doku."""
         for r in self.get_forward_rules():
-            netinterface = r[0] if f"-i {r[0]}" else ""
+            netinterface = f"-i {r[0]}" if r[0] else ""
             self.iptables.insert(
                 table="nat",
                 chain=Chain.PREROUTING,
@@ -453,7 +453,7 @@ class Easywall():
         self.iptables.add_custom("-I DOCKER-USER -s 10.8.0.0/24 -j ACCEPT")
         
         for r in self.get_forward_rules():
-            netinterface = r[0] if f"-i {r[0]}" else ""
+            netinterface = f"-i {r[0]}" if r[0] else ""
             self.iptables.add_custom(f"-I DOCKER-USER {netinterface} -p {r[1]} -d {r[3]} --dport {r[4]} -j DROP")
             for port in self.rules.get_current_rules(r[1]):
                 if port["port"] == r[2]:

@@ -156,5 +156,5 @@ debian/easywall/
 
 # Custom
 *.ovpn
-index.cuc.html
+index.*.html
 !easywall/web/static/fonts/asap-*.ttf
