@@ -1,6 +1,5 @@
 ![Dashboard](https://raw.githubusercontent.com/themelektaus/easywall/master/screenshots/themelektaus-easywall-dashboard.png)
-![Dashboard](https://raw.githubusercontent.com/themelektaus/easywall/master/screenshots/themelektaus-easywall-ports.png)
-![Dashboard](https://raw.githubusercontent.com/themelektaus/easywall/master/screenshots/themelektaus-easywall-forwarding.png)
+<img src="https://raw.githubusercontent.com/themelektaus/easywall/master/screenshots/themelektaus-easywall-ports.png" width="49%" /> <img src="https://raw.githubusercontent.com/themelektaus/easywall/master/screenshots/themelektaus-easywall-forwarding.png" width="49%" />
 
 ## New Connections
 - **Docker Support**
