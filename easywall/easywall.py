@@ -7,7 +7,7 @@ from easywall.acceptance import Acceptance
 from easywall.config import Config
 from easywall.iptables_handler import Chain, Iptables, Target
 from easywall.rules_handler import RulesHandler
-from easywall.utility import file_exists, rename_file, execute_os_command, get_ip_address
+from easywall.utility import file_exists, rename_file, execute_os_command, get_ip_address, get_docker_internals
 
 
 class Easywall():
@@ -73,8 +73,8 @@ class Easywall():
         lan = self.cfg.get_value("NETINTERFACES", "lan")
         wan = self.cfg.get_value("NETINTERFACES", "wan")
         vpn = self.cfg.get_value("NETINTERFACES", "vpn")
-        docker1 = self.cfg.get_value("NETINTERFACES", "docker1")
-        docker2 = self.cfg.get_value("NETINTERFACES", "docker2")
+        docker = self.cfg.get_value("NETINTERFACES", "docker")
+        docker_internals = get_docker_internals()
 
         # Apply ICMP Rules
         self.apply_icmp()
@@ -108,10 +108,10 @@ class Easywall():
         self.apply_whitelist()
 
         # accept TCP Ports
-        self.apply_rules("tcp", docker1, docker2)
+        self.apply_rules("tcp", docker, docker_internals)
 
         # accept UDP Ports
-        self.apply_rules("udp", docker1, docker2)
+        self.apply_rules("udp", docker, docker_internals)
 
         # Apply Custom Rules
         self.apply_custom_rules()
@@ -123,13 +123,15 @@ class Easywall():
                 "-m limit --limit {}/minute -j LOG --log-prefix \"easywall blocked: \"".
                 format(self.cfg.get_value("IPTABLES", "log_blocked_connections_log_limit")))
 
-        # accept lan, vpn and reverse proxy (docker2)
+        # accept lan, vpn and docker internals
         self.iptables.add_custom(f"-A DOCKER-USER -i {lan} -j ACCEPT")
         self.iptables.add_custom(f"-A DOCKER-USER -o {lan} -j ACCEPT")
         self.iptables.add_custom(f"-A DOCKER-USER -i {vpn} -j ACCEPT")
         self.iptables.add_custom(f"-A DOCKER-USER -o {vpn} -j ACCEPT")
         self.iptables.add_custom(f"-A DOCKER-USER -o {wan} -j ACCEPT")
-        self.iptables.add_custom(f"-A DOCKER-USER -i {wan} -o {docker2} -j ACCEPT")
+        
+        for docker_internal in docker_internals:
+            self.iptables.add_custom(f"-A DOCKER-USER -i {wan} -o {docker_internal} -j ACCEPT")
         self.iptables.add_custom(f"-A DOCKER-USER -i {wan} -j DROP")
 
         # reject all packages which not match the rules
@@ -393,7 +395,7 @@ class Easywall():
             else:
                 self.iptables.add_append(Chain.INPUT, "-s {} -j ACCEPT".format(ipaddr), onlyv4=True)
 
-    def apply_rules(self, ruletype: str, docker1: str, docker2: str) -> None:
+    def apply_rules(self, ruletype: str, docker, docker_internals: list) -> None:
         """
         this function adds rules for incoming tcp and udp connections to iptables
         which accept a connection to this list of ports
@@ -417,11 +419,14 @@ class Easywall():
             if port["netinterface"]:
                 netinterface = self.cfg.get_value("NETINTERFACES", port["netinterface"]);
                 self.apply_rules_add(netinterface, rule, jail)
-                self.apply_rules_add(docker1, rule, jail)
-                self.apply_rules_add(docker2, rule, jail)
+                self.apply_rules_add(docker, rule, jail)
+                for docker_internal in docker_internals:
+                    self.apply_rules_add(docker_internal, rule, jail)
                 self.iptables.add_custom(f"-A DOCKER-USER -i {netinterface} {rule} -j {jail}")
-                self.iptables.add_custom(f"-A DOCKER-USER -i {docker1} {rule} -j {jail}")
-                self.iptables.add_custom(f"-A DOCKER-USER -i {docker2} {rule} -j {jail}")
+                self.iptables.add_custom(f"-A DOCKER-USER -i {docker} {rule} -j {jail}")
+                for docker_internal in docker_internals:
+                    self.iptables.add_custom(f"-A DOCKER-USER -i {docker_internal} {rule} -j {jail}")
+                
             else:
                 self.apply_rules_add(None, rule, jail)
                 self.iptables.add_custom(f"-A DOCKER-USER {rule} -j {jail}")

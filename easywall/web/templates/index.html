@@ -71,7 +71,7 @@
             <div class="dashboard-item">
                 <div class="dashboard-item-icon">
                     <a href="/download/client.example.vpn.ovpn">
-                        <img src="/static/img/openvpn.svg">
+                        <img src="/static/img/openvpn.svg" style="width: 80%; margin-top: 2em; ">
                     </a>
                 </div>
                 <h3>OpenVPN</h3>
@@ -100,10 +100,26 @@
                     For example, the reverse proxy is running as a docker container.<br>
                 </p>
             </div>
+
+            <div class="dashboard-item">
+                <div class="dashboard-item-icon">
+                    <a href="http://cloud.example.vpn:3000" target="_blank">
+                        <img src="/static/img/database.png">
+                    </a>
+                </div>
+                <h3>SQL</h3>
+                <h4><a href="http://cloud.example.vpn:3000" target="_blank" class="badge badge-info">cloud.example.vpn:3000</a></h4>
+                <p class="lead">
+                    There is another Docker container called
+                    <span class="badge badge-secondary">SQLPad</span><br>
+                    This is a web app for writing and running SQL queries and<br>
+                    visualizing the results.
+                </p>
+            </div>
             
             <div class="dashboard-item">
                 <div class="dashboard-item-icon">
-                    <img src="/static/img/info.svg">
+                    <img src="/static/img/info.svg" style="width: 90%; opacity: .8; ">
                 </div>
                 <h3>Facts</h3>
                 <p class="lead">
@@ -120,7 +136,9 @@
                 </div>
                 <h3>Other Subdomains</h3>
                 <p class="lead">
-                    Request the public IP address of this server <a href="#" class="badge badge-primary">ip.example.com</a>
+                    Request the public IP address of this server <a href="#" class="badge badge-primary">ip.example.com</a><br>
+                    <br>
+                    <br>
                 </p>
             </div>
             

@@ -42,8 +42,7 @@ class Main():
         self.cfg.set_default_value("NETINTERFACES", "lan", "lo")
         self.cfg.set_default_value("NETINTERFACES", "wan", "lo")
         self.cfg.set_default_value("NETINTERFACES", "vpn", "lo")
-        self.cfg.set_default_value("NETINTERFACES", "docker1", "lo")
-        self.cfg.set_default_value("NETINTERFACES", "docker2", "lo")
+        self.cfg.set_default_value("NETINTERFACES", "docker", "lo")
         
         self.cfg_log = Config(LOG_CONFIG_PATH)
 

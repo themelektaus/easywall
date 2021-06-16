@@ -233,6 +233,15 @@ def get_network_interfaces() -> list:
     return result
 
 
+def get_docker_internals() -> list:
+    """TODO: Doku."""
+    result = []
+    for ifname in listdir('/sys/class/net/'):
+        if ifname.startswith("br-"):
+            result.append(ifname)
+    return result
+
+
 def get_ip_address(ifname) -> str:
     """TODO: Doku."""
     output = execute_os_command2(f"ifconfig {ifname} | grep inet")[0]
@@ -242,6 +251,7 @@ def get_ip_address(ifname) -> str:
     if len(output) < 2:
         return None
     return output[1]
+
 
 def compare_rules(a, b) -> bool:
     """TODO: Doku."""

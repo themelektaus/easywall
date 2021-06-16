@@ -131,6 +131,7 @@ body {
   display: inline-block;
   width: 100%;
   max-width: 640px;
+  height: 420px;
   vertical-align: bottom;
   margin: 0;
   padding: 1em;
@@ -153,7 +154,7 @@ body {
 .dashboard-item-icon {
   width: 200px;
   height: 200px;
-  margin: 2.5em auto 1.5em;
+  margin: 1.5em auto 1em;
   padding: 15px;
 }
 

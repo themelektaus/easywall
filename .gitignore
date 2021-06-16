@@ -155,6 +155,6 @@ debian/.debhelper/
 debian/easywall/
 
 # Custom
-*.ovpn
 index.*.html
+easywall/web/download/*
 !easywall/web/static/fonts/asap-*.ttf

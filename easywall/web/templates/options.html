@@ -597,19 +597,10 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="netinterface_docker1">Docker (Default)</label>
-                                    <select class="custom-select" id="netinterface_docker1" name="docker1">
+                                    <label for="netinterface_docker">Docker</label>
+                                    <select class="custom-select" id="netinterface_docker" name="docker">
                                         {% for x in vars.network_interfaces %}
-                                            <option {% if vars.config.get_value("NETINTERFACES", "docker1") == x[0] %}selected{% endif %} value="{{ x[0] }}">{{ x[0] }} ({{ x[1] }})</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="netinterface_vpn">Docker (Reverse Proxy)</label>
-                                    <select class="custom-select" id="netinterface_docker2" name="docker2">
-                                        {% for x in vars.network_interfaces %}
-                                            <option {% if vars.config.get_value("NETINTERFACES", "docker2") == x[0] %}selected{% endif %} value="{{ x[0] }}">{{ x[0] }} ({{ x[1] }})</option>
+                                            <option {% if vars.config.get_value("NETINTERFACES", "docker") == x[0] %}selected{% endif %} value="{{ x[0] }}">{{ x[0] }} ({{ x[1] }})</option>
                                         {% endfor %}
                                     </select>
                                 </div>
