@@ -3,7 +3,6 @@
 
 ## New Connections
 - **Docker Support**
-- **NGINX Proxy Manager Support**
 - **OpenVPN Support**
 
 ## New Features
