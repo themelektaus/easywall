@@ -472,12 +472,9 @@ class Easywall():
 
     def get_forward_rules(self):
         for ipaddr in self.rules.get_current_rules("forwarding"):
-            netinterface = self.cfg.get_value("NETINTERFACES", ipaddr.split(":")[0])
-            proto = ipaddr.split(":")[1]
-            source = ipaddr.split(":")[2]
-            dest_ip = gethostbyname(ipaddr.split(":")[3])
-            dest = ipaddr.split(":")[4]
-            yield (netinterface, proto, source, dest_ip, dest)
+            r = ipaddr.split(":")
+            netinterface = self.cfg.get_value("NETINTERFACES", r[0]) if r[0] else ""
+            yield (netinterface, r[1], r[2], gethostbyname(r[3]), r[4])
 
     def rotate_backup(self) -> None:
         """TODO: Doku."""
