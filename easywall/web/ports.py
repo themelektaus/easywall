@@ -45,6 +45,9 @@ def ports_save() -> str:
         entry["allowedhost"] = ""
 
         for key, value in request.form.items():
+            if key == "edit":
+                action = "edit"
+                entry["ruletype"] = value
             if key == "remove":
                 action = "remove"
                 entry["ruletype"] = value
@@ -67,11 +70,14 @@ def ports_save() -> str:
         result = True
         if action == "add":
             result = add_port(entry)
+        elif action == "edit":
+            result = edit_port(entry)
         else:
             result = remove_port(entry)
 
         return ports(result)
     return login()
+
 
 def add_port(entry: dict) -> bool:
     """Add a port to the list of open ports."""
@@ -89,6 +95,18 @@ def add_port(entry: dict) -> bool:
         rules.save_new_rules(ruletype, rulelist)
         return True
     return False
+
+
+def edit_port(entry: dict) -> bool:
+    """Edit a port from the list of open ports."""
+    rules = RulesHandler()
+    rulelist = rules.get_rules_for_web(entry["ruletype"])
+    for i in range(len(rulelist)):
+        if compare_rules(rulelist[i], entry):
+            rulelist[i]["description"] = entry["description"].strip()
+            break
+    rules.save_new_rules(entry["ruletype"], rulelist)
+    return True
 
 
 def remove_port(entry: dict) -> bool:

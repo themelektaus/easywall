@@ -230,3 +230,24 @@ b, strong {
 .font-size-15-normal-w-60 {
   width: 60px;
 }
+
+.auto-size-field > input,
+.auto-size-field > span {
+  color: #888;
+  white-space: pre;
+  border: none;
+  outline: none;
+  box-sizing: initial;
+}
+
+.auto-size-field > input::placeholder {
+  color: #ddd;
+}
+
+.auto-size-field > input:focus {
+  color: #000;
+}
+
+.auto-size-field > span {
+  display: none;
+}

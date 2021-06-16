@@ -37,4 +37,31 @@ $(document).ready(() => {
   $('.dashboard-item').each(function(i) {
     setTimeout(() => $(this).addClass("visible"), 100 + i * 70);
   });
+  
+  function autoSizeFieldUpdate(text) {
+    if (!text.trim()) {
+        const placeholder = $(this).attr('placeholder');
+        if (placeholder) {
+          text = placeholder.trim();
+        }
+    }
+    const $span = $(this).parent().find('span');
+    $span.text(text);
+    $(this).css("width", $span.width() + 10);
+  }
+  $('.auto-size-field > input').keypress(function (e) {
+      if (e.which && e.charCode) {
+        const c = String.fromCharCode(e.keyCode | e.charCode);
+        autoSizeFieldUpdate.call($(this), $(this).val() + c);
+      }
+  });
+  $('.auto-size-field > input').keyup(function (e) { 
+    if (e.keyCode === 8 || e.keyCode === 46) {
+      autoSizeFieldUpdate.call($(this), $(this).val());
+    }
+  });
+  $('.auto-size-field > input').each(function () {
+    autoSizeFieldUpdate.call($(this), $(this).val())
+  });
+  
 });

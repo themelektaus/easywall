@@ -83,6 +83,21 @@
                     <form action="/forwarding-save" method="post">
                         <div class="form-group">
                             <div class="form-check form-check-inline">
+                                <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio" name="tcpudp"
+                                    id="tcpudp1" value="tcp" checked="checked">
+                                <label class="form-check-label">TCP</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio" name="tcpudp"
+                                    id="tcpudp2" value="udp">
+                                <label class="form-check-label">UDP</label>
+                            </div>
+                            <small id="tcpudpHelp" class="form-text text-muted">
+                                Select whether the port to be opened is a TCP or UDP port.
+                            </small>
+                        </div>
+                        <div class="form-group">
+                            <div class="form-check form-check-inline">
                                 <input class="form-check-input" type="radio" name="netinterface" value="" checked="checked">
                                 <label class="form-check-label">Any</label>
                             </div>
@@ -100,21 +115,6 @@
                             </div>
                             <small class="form-text text-muted">
                                 Select the network interface.
-                            </small>
-                        </div>
-                        <div class="form-group">
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio" name="tcpudp"
-                                    id="tcpudp1" value="tcp" checked="checked">
-                                <label class="form-check-label">TCP</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" aria-describedby="tcpudpHelp" type="radio" name="tcpudp"
-                                    id="tcpudp2" value="udp">
-                                <label class="form-check-label">UDP</label>
-                            </div>
-                            <small id="tcpudpHelp" class="form-text text-muted">
-                                Select whether the port to be opened is a TCP or UDP port.
                             </small>
                         </div>
                         <div class="form-group">
