@@ -7,8 +7,8 @@
 - **OpenVPN Support**
 
 ## New Features
-- **Network interfaces** - Assign network interfaces and include them in the rules.
-- **Strict Open Ports** - additionally limits an open port by a network interface and/or a source host/ip.
+- **Network interfaces** - can be assigned and used as an additional requirement of a rule.
+- **Extended Open Ports** - limits an open port by a network interface and/or a source host/ip.
 - **IP Forwarding** - has the ability to set a destination host/ip.
 - **Dashboard** - is an possible overview of available services, apps and so on...
 - **Navigation** - Hide unused menu items.
