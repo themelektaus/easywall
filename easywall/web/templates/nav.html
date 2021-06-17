@@ -81,6 +81,17 @@
                 </a>
             </li>
             -->
+            
+            {% if vars.nav_docs %}
+                <li class="nav-item {% if vars.title == 'Docs' %} active {% endif %}">
+                    <a class="nav-link btn" title="Docs" href="/docs">
+                        <i class="fa fa-book" aria-hidden="true"></i>&nbsp;
+                        <span class="d-none d-sm-inline">Docs</span>
+                        <span class="d-lg-none">Documentation</span>
+                    </a>
+                </li>
+            {% endif %}
+            
             <li class="nav-item">
                 <a class="nav-link btn" title="Host Information" href="#" data-toggle="modal" data-target="#hostModal">
                     <i class="fa fa-server" aria-hidden="true"></i>&nbsp;

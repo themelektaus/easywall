@@ -908,6 +908,14 @@
                                         {% if vars.config_web.get_value("uwsgi", "index-page") != "" %}
                                         value={{vars.config_web.get_value("uwsgi", "index-page")}} {% endif %}>
                                 </div>
+                                
+                                <div class="form-group">
+                                    <label for="docs-page">Documentation page</label>
+                                    <input type="text" class="form-control" id="docs-page" name="docs-page"
+                                        placeholder="docs.html"
+                                        {% if vars.config_web.get_value("uwsgi", "docs-page") != "" %}
+                                        value={{vars.config_web.get_value("uwsgi", "docs-page")}} {% endif %}>
+                                </div>
 
                                 <div class="form-group">
                                     <label for="https-socket">Options to start the web server</label>
@@ -962,11 +970,18 @@
                                     <label class="form-check-label" for="nav_whitelist">Whitelist</label>
                                 </div>
 
-                                <div class="form-group m-1 mb-3">
+                                <div class="form-group m-1">
                                     <input type="hidden" value="off" name="checkbox_nav_custom">
                                     <input type="checkbox" id="nav_custom" name="nav_custom"
                                         {% if vars.config_web.get_value("uwsgi", "nav_custom") == true %} checked {% endif %}>
                                     <label class="form-check-label" for="nav_custom">Custom</label>
+                                </div>
+                                
+                                <div class="form-group m-1 mb-3">
+                                    <input type="hidden" value="off" name="checkbox_nav_docs">
+                                    <input type="checkbox" id="nav_docs" name="nav_docs"
+                                        {% if vars.config_web.get_value("uwsgi", "nav_docs") == true %} checked {% endif %}>
+                                    <label class="form-check-label" for="nav_docs">Docs</label>
                                 </div>
                                 
                                 <button type="submit" class="btn btn-primary">Submit</button>

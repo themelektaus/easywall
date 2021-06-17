@@ -33,10 +33,13 @@ if (countdown != null) {
 }
 
 $(document).ready(() => {
-  $('#flashesModal').modal('show');
+  setTimeout(() => $(".jumbotron .container").addClass("visible"), 50);
+  setTimeout(() => $("body > .container").addClass("visible"), 100);
   $('.dashboard-item').each(function(i) {
-    setTimeout(() => $(this).addClass("visible"), 100 + i * 70);
+    setTimeout(() => $(this).addClass("visible"), 300 + i * 70);
   });
+  
+  $('#flashesModal').modal('show');
   
   function autoSizeFieldUpdate(text) {
     if (!text.trim()) {

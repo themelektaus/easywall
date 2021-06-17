@@ -58,6 +58,7 @@ class Webutils(object):
         payload.nav_blacklist = self.cfg.get_value("uwsgi", "nav_blacklist")
         payload.nav_whitelist = self.cfg.get_value("uwsgi", "nav_whitelist")
         payload.nav_custom = self.cfg.get_value("uwsgi", "nav_custom")
+        payload.nav_docs = self.cfg.get_value("uwsgi", "nav_docs")
         return payload
 
     def get_machine_infos(self) -> dict:

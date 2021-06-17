@@ -18,6 +18,7 @@ from easywall.web.error import forbidden, page_not_found
 from easywall.web.firstrun import firstrun, firstrun_save
 from easywall.web.forwarding import forwarding, forwarding_save
 from easywall.web.index import index
+from easywall.web.docs import docs
 from easywall.web.login import login_post, logout
 from easywall.web.options import options, options_save
 from easywall.web.ports import ports, ports_save
@@ -67,6 +68,12 @@ def index_route() -> Union[Response, str]:
     if utils.check_first_run() is True:
         return firstrun()
     return index()
+
+
+@APP.route('/docs')
+def docs_route() -> str:
+    """TODO: Doku."""
+    return docs()
 
 
 @APP.route('/options')
@@ -256,6 +263,7 @@ class Main(object):
 
         self.cfg = Config(CONFIG_PATH)
         self.cfg.set_default_value("uwsgi", "index-page", "index.html")
+        self.cfg.set_default_value("uwsgi", "docs-page", "docs.html")
 
         if debug is True:
             info("loading Flask debug configuration")

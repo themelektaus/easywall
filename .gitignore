@@ -156,5 +156,6 @@ debian/easywall/
 
 # Custom
 index.*.html
+docs.*.html
 easywall/web/download/*
 !easywall/web/static/fonts/asap-*.ttf
